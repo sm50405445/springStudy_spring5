@@ -9,11 +9,16 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import assembler.Assembler;
 import config.AppCtx;
+import config.AppCtx1;
+import config.AppCtx2;
 import spring.ChangePasswordService;
 import spring.DuplicateMemberException;
+import spring.MemberInfoPrinter;
+import spring.MemberListPrinter;
 import spring.MemberNotFoundException;
 import spring.MemberRegisterService;
 import spring.RegisterRequest;
+import spring.VersionPrinter;
 import spring.WrongIdPasswordException;
 
 public class MainForSpring {
@@ -22,7 +27,7 @@ public class MainForSpring {
 	
 	public static void main(String[] args) throws IOException{
 		
-		ctx = new AnnotationConfigApplicationContext(AppCtx.class);
+		ctx = new AnnotationConfigApplicationContext(AppCtx1.class);
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		
@@ -39,7 +44,19 @@ public class MainForSpring {
 			}
 			else if(command.startsWith("change ")) {
 				processChangeCommand(command.split(" "));
-				System.out.println(command.length());
+				
+				continue;
+			}
+			else if(command.startsWith("list")) {
+				processListCommand();
+				continue;
+			}
+			else if(command.startsWith("infocommand")) {
+				processInfoCommand(command.split(" "));
+				continue;
+			}
+			else if(command.startsWith("version")) {
+				processVersionCommand();
 				continue;
 			}
 			printHelp();
@@ -100,6 +117,28 @@ public class MainForSpring {
 		System.out.println("\n 잘못된 명령입니다. 명령어 사용법 확인하세요");
 		System.out.println("명령어 사용법: ");
 		System.out.println("new 이메일 이름 암호 암호확인");
-		System.out.println("change 이메일 현재비번 변경비번\n");
+		System.out.println("change 이메일 현재비번 변경비번\n");		
+		System.out.println("list \n");
+		System.out.println("infocommand 이메일 \n");
+		System.out.println("version \n");
+	}
+	
+	private static void processListCommand() {
+		MemberListPrinter listPrinter = ctx.getBean("listPrinter",MemberListPrinter.class);
+		listPrinter.printAll();
+	}
+	
+	private static void processInfoCommand(String[] arg){
+		if(arg.length!=2) {
+			printHelp();
+			return;
+		}
+		MemberInfoPrinter infoPrinter = (MemberInfoPrinter)ctx.getBean("infoprinter");
+		infoPrinter.printMemberInfo(arg[1]);	
+	}
+	
+	private static void processVersionCommand() {
+		VersionPrinter versionPrinter = ctx.getBean("versionPrinter",VersionPrinter.class);
+		versionPrinter.print();
 	}
 }
