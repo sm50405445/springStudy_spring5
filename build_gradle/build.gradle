@@ -1,0 +1,21 @@
+//그레이들 자바 플러그인 적용
+apply plugin: 'java'
+
+//소스와 컴파일 결과 1.8version 맞춤
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+compileJava.options.encoding = "UTF-8"
+
+//메이븐 중앙 repository 다운로드
+repositories{
+mavenCentral()
+}
+
+dependencies{
+compile 'org.springframework:spring-context:5.0.2.RELEASE'
+}
+
+//소스공유시 그레이들 설치 없이 그레이들 명령어를 실행할 수 있는 래퍼를 생성
+task wrapper(type: Wrapper){
+gradleVersion = '4.4'
+}
